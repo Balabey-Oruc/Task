@@ -1,24 +1,25 @@
-
 import 'package:flutter/material.dart';
-import 'taskCard.dart';
 import 'getJsonData.dart';
-
+import 'taskCard.dart';
 
 class TaskScreen extends StatefulWidget {
-
-
-
   @override
   _TaskScreenState createState() => _TaskScreenState();
 }
 
 class _TaskScreenState extends State<TaskScreen> {
-    var data;
-  void initState(){
+  bool isloaded = false;
+  var data;
+  void initState() {
     super.initState();
-    data = getData();
-    print(data);
-    print('hay');
+    loadData();
+  }
+
+  loadData() async {
+    data = await getData();
+    setState(() {
+      isloaded = true;
+    });
   }
 
   @override
@@ -68,36 +69,33 @@ class _TaskScreenState extends State<TaskScreen> {
                   fontSize: 16.0,
                 ),
               ),
-              Builder(
-                 builder:(context){
-                   if (data[0]['title'] != null)
-
-                 return Expanded(
-                  child: ListView(
-                    children: [
-                      TaskCard(
-                        firstBoxColour: Color(0xffFFDEDE),
-                        title: data[0]['title'],
-                        subtitle: 'sa',
-                      ),
-                      TaskCard(
-                        firstBoxColour: Color(0x595BB1FF),
-                        title: 'sa',
-                        subtitle: 'sa',
-                      ),
-                      TaskCard(
-                        firstBoxColour: Color(0xffB1F8C1),
-                        title: 'sa',
-                        subtitle: 'sa',
-                      ),
-                    ],
-                  ),
+              Builder(builder: (context) {
+                if (isloaded)
+                  return Expanded(
+                    child: ListView(
+                      children: [
+                        TaskCard(
+                          firstBoxColour: Color(0xffFFDEDE),
+                          title: data[0]['title'],
+                          subtitle: data[0]['createdAt'],
+                        ),
+                        TaskCard(
+                          firstBoxColour: Color(0x595BB1FF),
+                          title: data[1]['title'],
+                          subtitle: data[1]['createdAt'],
+                        ),
+                        TaskCard(
+                          firstBoxColour: Color(0xffB1F8C1),
+                          title: data[2]['title'],
+                          subtitle: data[2]['createdAt'],
+                        ),
+                      ],
+                    ),
+                  );
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
-                 return Center(
-                   child: CircularProgressIndicator(),
-                 );
-                 }
-              ),
+              }),
             ],
           ),
         ),
